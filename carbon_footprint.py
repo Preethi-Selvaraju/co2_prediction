@@ -78,12 +78,12 @@ try:
         df_all=pd.DataFrame(columns=['DATE','CO2'])
         i=0
         for root, dirs, files in os.walk("data"):
-            st.write("hi")
+            #st.write("hi")
             for file in files:
-                st.write(file)
+                #st.write(file)
                 if os.path.splitext(file)[1] == '.nc4':
                     filePath = os.path.join(root, file)
-                    st.write("****"+filePath+"*******")
+                    #st.write("****"+filePath+"*******")
                 ds = nc.Dataset(filePath)
                 #print(ds)
                 print(ds['xco2'])
@@ -101,7 +101,7 @@ try:
                 #df_first=df[(60>df['Latitude']> 59)]
                 df_first=df.loc[(df['Latitude'] >user_lat) &(df['Latitude'] < user_lat+20) & (df['Longitude']> user_lon)&(df['Longitude']< user_lon+20 ),'xco2']
                 res=df_first.mean()
-                st.write(res)
+                #st.write(res)
 
 
                 df_all.loc[i,"DATE"] = file[15:17]+"/"+file[13:15]+"/20"+file[11:13]
@@ -240,6 +240,7 @@ try:
             no2_output=pd.DataFrame(scaler.inverse_transform(lst_output),columns=['NO2 Concentration 🏭'])
             print(no2_output)
             output= (no2_output.at[predict_days-1,'CO2 Concentration 🏭'])
+            st.success(output)
             res=output[:-1]
 
     
