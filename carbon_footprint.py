@@ -75,51 +75,49 @@ try:
             st.warning("No location choosen")
         user_lat=float(user_lat)
         user_lon=float(user_lon)
-        df_all=pd.DataFrame(columns=['DATE','CO2'])
-        i=0
-        for root, dirs, files in os.walk("data"):
-            #st.write("hi")
-            for file in files:
-                #st.write(file)
-                if os.path.splitext(file)[1] == '.nc4':
-                    filePath = os.path.join(root, file)
-                    #st.write("****"+filePath+"*******")
-                ds = nc.Dataset(filePath)
-                #print(ds)
-                print(ds['xco2'])
-                print(ds['xco2'][:])
 
-                df=pd.DataFrame(columns=["Latitude","Longitude","xco2"])
-
-                df["Longitude"] = ds['longitude'][:]
-                df["Latitude"] = ds['latitude'][:]
-                df["xco2"]=ds['xco2'][:]
-
-                #Repalce inplace 
-                df.fillna(0,inplace=True)
-
-                #df_first=df[(60>df['Latitude']> 59)]
-                df_first=df.loc[(df['Latitude'] >user_lat) &(df['Latitude'] < user_lat+20) & (df['Longitude']> user_lon)&(df['Longitude']< user_lon+20 ),'xco2']
-                res=df_first.mean()
-                #st.write(res)
-
-
-                df_all.loc[i,"DATE"] = file[15:17]+"/"+file[13:15]+"/20"+file[11:13]
-                df_all.loc[i,"CO2"] = res
-
-                i+=1
-
-        df_all.to_csv(r"days_combined.csv")
-        st.write(df_all)
 
 
 
         if st.button("Predict"):
 
+            df_all=pd.DataFrame(columns=['DATE','CO2'])
+            i=0
+            for root, dirs, files in os.walk("data"):
+                #st.write("hi")
+                for file in files:
+                    #st.write(file)
+                    if os.path.splitext(file)[1] == '.nc4':
+                        filePath = os.path.join(root, file)
+                        #st.write("****"+filePath+"*******")
+                    ds = nc.Dataset(filePath)
+                    #print(ds)
+                    print(ds['xco2'])
+                    print(ds['xco2'][:])
 
-            #df_first=df[(60>df['Latitude']> 59)]
-            df_first=df.loc[(df['Latitude'] >user_lat) &(df['Latitude'] < user_lat+20) & (df['Longitude']> user_lon)&(df['Longitude']< user_lon+20 ),'xco2']
-            res=df_first.mean()
+                    df=pd.DataFrame(columns=["Latitude","Longitude","xco2"])
+
+                    df["Longitude"] = ds['longitude'][:]
+                    df["Latitude"] = ds['latitude'][:]
+                    df["xco2"]=ds['xco2'][:]
+
+                    #Repalce inplace 
+                    df.fillna(0,inplace=True)
+
+                    #df_first=df[(60>df['Latitude']> 59)]
+                    df_first=df.loc[(df['Latitude'] >user_lat) &(df['Latitude'] < user_lat+20) & (df['Longitude']> user_lon)&(df['Longitude']< user_lon+20 ),'xco2']
+                    res=df_first.mean()
+                    #st.write(res)
+
+
+                    df_all.loc[i,"DATE"] = file[15:17]+"/"+file[13:15]+"/20"+file[11:13]
+                    df_all.loc[i,"CO2"] = res
+
+                    i+=1
+
+            df_all.to_csv(r"days_combined.csv")
+            st.write(df_all)
+
  ##############################################
  #            PREDICTION MODULE               #
  ##############################################
