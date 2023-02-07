@@ -71,7 +71,7 @@ try:
                 if os.path.splitext(file)[1] == '.nc4':
                     filePath = os.path.join(root, file)
                     print("****"+filePath+"*******")
-                ds = nc.Dataset(filePath)
+                ds = nc.Dataset(r"oco2_LtCO2_221219_B11014Ar_230118181033s.nc4")
                 #print(ds)
                 print(ds['xco2'])
                 print(ds['xco2'][:])
