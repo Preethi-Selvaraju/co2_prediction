@@ -19,6 +19,14 @@ import math
 from streamlit_folium import folium_static
 from streamlit_folium import st_folium
 import folium
+from sklearn.metrics import mean_squared_error
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import LSTM
+import matplotlib.pyplot as plt 
+from datetime import datetime
+from sklearn.preprocessing import MinMaxScaler
+
 
 st.set_page_config(
 page_title="Carbon Footprint Calculator",
