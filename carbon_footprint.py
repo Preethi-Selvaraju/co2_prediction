@@ -79,7 +79,7 @@ try:
         for root, dirs, files in os.walk("data"):
             st.write("hi")
             for file in files:
-                print(file)
+                st.write(file)
                 if os.path.splitext(file)[1] == '.nc4':
                     filePath = os.path.join(root, file)
                     print("****"+filePath+"*******")
