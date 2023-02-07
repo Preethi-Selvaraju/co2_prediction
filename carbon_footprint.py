@@ -61,7 +61,7 @@ try:
    
     if nav == "Group Emissions 🌐":
         st.markdown(f"""<h1 style='text-align: center; font-weight:bold;color:black;background-color:powderblue;font-size:20pt;'>Know the co2 level at your area⚠️</h1>""",unsafe_allow_html=True)
-        st.write(".")
+        st.write("hi")
         df_all=pd.DataFrame(columns=['DATE','CO2'])
         i=0
         for root, dirs, files in os.walk(r"data"):
