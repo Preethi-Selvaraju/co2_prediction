@@ -60,6 +60,9 @@ try:
       st.markdown("<h1 style='color:green;text-align: center;font-family:times new roman;font-size:25pt;font-weight: bold;'>Reduce your carbon footprint!</h1>", unsafe_allow_html=True)        
    
     if nav == "Group Emissions 🌐":
+
+        st.markdown(f"""<h1 style='text-align: center; font-weight:bold;color:black;background-color:powderblue;font-size:20pt;'>Know the co2 level at your area⚠️</h1>""",unsafe_allow_html=True)
+        st.write("hi")
         m = folium.Map(location=None, width='100%', height='100%', left='0%', top='0%', position='relative', tiles='OpenStreetMap', attr=None, min_zoom=0, max_zoom=18, zoom_start=10, min_lat=- 90, max_lat=90, min_lon=- 180, max_lon=180, max_bounds=True, crs='EPSG3857', control_scale=False, prefer_canvas=False, no_touch=False, disable_3d=False, png_enabled=False, zoom_control=True)
         m.add_child(folium.LatLngPopup())
         map = st_folium(m)
@@ -71,8 +74,6 @@ try:
         except:
             st.warning("No location choosen")
 
-        st.markdown(f"""<h1 style='text-align: center; font-weight:bold;color:black;background-color:powderblue;font-size:20pt;'>Know the co2 level at your area⚠️</h1>""",unsafe_allow_html=True)
-        st.write("hi")
         df_all=pd.DataFrame(columns=['DATE','CO2'])
         i=0
         for root, dirs, files in os.walk("data"):
