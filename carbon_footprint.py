@@ -64,7 +64,8 @@ try:
         st.write("hi")
         df_all=pd.DataFrame(columns=['DATE','CO2'])
         i=0
-        for root, dirs, files in os.walk(r"data"):
+        for root, dirs, files in os.walk("data"):
+            st.write("hi")
             for file in files:
                 print(file)
                 if os.path.splitext(file)[1] == '.nc4':
