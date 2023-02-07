@@ -73,7 +73,8 @@ try:
 
         except:
             st.warning("No location choosen")
-
+        user_lat=float(user_lat)
+        user_lon=float(user_lon)
         df_all=pd.DataFrame(columns=['DATE','CO2'])
         i=0
         for root, dirs, files in os.walk("data"):
@@ -83,7 +84,7 @@ try:
                 if os.path.splitext(file)[1] == '.nc4':
                     filePath = os.path.join(root, file)
                     st.write("****"+filePath+"*******")
-                ds = nc.Dataset(r"oco2_LtCO2_221219_B11014Ar_230118181033s.nc4")
+                ds = nc.Dataset(filePath)
                 #print(ds)
                 print(ds['xco2'])
                 print(ds['xco2'][:])
@@ -100,7 +101,7 @@ try:
                 #df_first=df[(60>df['Latitude']> 59)]
                 df_first=df.loc[(df['Latitude'] >user_lat) &(df['Latitude'] < user_lat+20) & (df['Longitude']> user_lon)&(df['Longitude']< user_lon+20 ),'xco2']
                 res=df_first.mean()
-                print(res)
+                st.write(res)
 
 
                 df_all.loc[i,"DATE"] = file[15:17]+"/"+file[13:15]+"/20"+file[11:13]
@@ -109,12 +110,12 @@ try:
                 i+=1
 
         df_all.to_csv(r"days_combined.csv")
+        st.write(df_all)
 
 
 
         if st.button("Predict"):
-            user_lat=float(user_lat)
-            user_lon=float(user_lon)
+
 
             #df_first=df[(60>df['Latitude']> 59)]
             df_first=df.loc[(df['Latitude'] >user_lat) &(df['Latitude'] < user_lat+20) & (df['Longitude']> user_lon)&(df['Longitude']< user_lon+20 ),'xco2']
