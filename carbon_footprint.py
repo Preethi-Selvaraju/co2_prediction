@@ -232,7 +232,7 @@ try:
                     i=i+1
 
 
-            print(lst_output)
+            st.write(lst_output)
 
                 # st.write(df3)
             no2_output=pd.DataFrame(scaler.inverse_transform(lst_output),columns=['NO2 Concentration 🏭'])
