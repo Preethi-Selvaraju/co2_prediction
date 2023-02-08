@@ -117,13 +117,13 @@ try:
 
             df_all.to_csv(r"days_combined.csv")
             st.write(df_all)
-
- ##############################################
- #            PREDICTION MODULE               #
- ##############################################
- ### Data Collection
+            st.write("hiii")            
+            
+            
             data_frame=pd.read_csv(r"days_combined.csv")
+            st.write("hii2")  
             df1=data_frame.reset_index()['CO2']
+            
             mean_value=df1['CO2'].mean()
             st.write("jii")
             # Replace NaNs in column S2 with the
