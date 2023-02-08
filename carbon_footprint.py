@@ -124,7 +124,12 @@ try:
  ### Data Collection
             data_frame=pd.read_csv(r"days_combined.csv")
             df1=data_frame.reset_index()['CO2']
+            mean_value=df1['CO2'].mean()
 
+            # Replace NaNs in column S2 with the
+            # mean of values in the same column
+            df1['CO2'].fillna(value=mean_value, inplace=True)
+            st.write(df1)
              ### LSTM are sensitive to the scale of the data. so we apply MinMax scaler 
 
             scaler=MinMaxScaler(feature_range=(0,1))
