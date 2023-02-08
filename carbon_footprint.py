@@ -125,7 +125,7 @@ try:
             data_frame=pd.read_csv(r"days_combined.csv")
             df1=data_frame.reset_index()['CO2']
             mean_value=df1['CO2'].mean()
-
+            st.write("jii")
             # Replace NaNs in column S2 with the
             # mean of values in the same column
             df1['CO2'].fillna(value=mean_value, inplace=True)
