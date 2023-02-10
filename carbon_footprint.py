@@ -1,5 +1,6 @@
-
 import requests, time, random, datetime,ftplib
+from datetime import date
+
 import base64
 import os, re, matplotlib
 from reportlab.pdfgen import canvas
@@ -62,7 +63,7 @@ try:
     if nav == "Group Emissions 🌐":
 
         st.markdown(f"""<h1 style='text-align: center; font-weight:bold;color:black;background-color:powderblue;font-size:20pt;'>Know the co2 level at your area⚠️</h1>""",unsafe_allow_html=True)
-        st.write("hi")
+        #st.write("hi")
         m = folium.Map(location=None, width='100%', height='100%', left='0%', top='0%', position='relative', tiles='OpenStreetMap', attr=None, min_zoom=0, max_zoom=18, zoom_start=10, min_lat=- 90, max_lat=90, min_lon=- 180, max_lon=180, max_bounds=True, crs='EPSG3857', control_scale=False, prefer_canvas=False, no_touch=False, disable_3d=False, png_enabled=False, zoom_control=True)
         m.add_child(folium.LatLngPopup())
         map = st_folium(m)
@@ -73,9 +74,17 @@ try:
 
         except:
             st.warning("No location choosen")
+
+        today = date.today()
+
+        date1 = st.date_input('Date', value =  pd.to_datetime('2023-01-01'),min_value= pd.to_datetime('2023-01-01'),max_value= pd.to_datetime(today))
+        
         user_lat=float(user_lat)
         user_lon=float(user_lon)
-
+        
+        predict_days=abs((datetime.strptime('2022-12-31',"%Y-%m-%d")-datetime.strptime(str(date1),"%Y-%m-%d")).days)
+        
+        #st.write(predict_days)
 
 
 
@@ -92,8 +101,8 @@ try:
                         #st.write("****"+filePath+"*******")
                     ds = nc.Dataset(filePath)
                     #print(ds)
-                    print(ds['xco2'])
-                    print(ds['xco2'][:])
+                    #print(ds['xco2'])
+                    #print(ds['xco2'][:])
 
                     df=pd.DataFrame(columns=["Latitude","Longitude","xco2"])
 
@@ -114,22 +123,22 @@ try:
                     df_all.loc[i,"CO2"] = res
 
                     i+=1
-
+            df_all.fillna(df_all['CO2'].mean(),inplace=True)
             df_all.to_csv(r"days_combined.csv")
             st.write(df_all)
-            st.write("hiii")            
-            
+
+ ##############################################
+ #            PREDICTION MODULE               #
+ ##############################################
+ ### Data Collection
             
             data_frame=pd.read_csv(r"days_combined.csv")
-            st.write("hii2")  
             df1=data_frame.reset_index()['CO2']
-            st.write(df1)
-            mean_value=df1['CO2'].mean()
-            st.write(mean_value)
-            # Replace NaNs in column S2 with the
-            # mean of values in the same column
-            df1['CO2'].fillna(value=mean_value, inplace=True)
-            st.write(df1)
+            #st.write(df1)
+            
+            #mean_value=df1['CO2'].mean()
+
+
              ### LSTM are sensitive to the scale of the data. so we apply MinMax scaler 
 
             scaler=MinMaxScaler(feature_range=(0,1))
@@ -164,7 +173,7 @@ try:
 
              ### Create the Stacked LSTM model
             model=Sequential()
-            model.add(LSTM(50,return_sequences=True,input_shape=(2,1)))
+            model.add(LSTM(50,return_sequences=True,input_shape=(time_step,1)))
             model.add(LSTM(50,return_sequences=True))
             model.add(LSTM(50))
             model.add(Dense(1))
@@ -201,13 +210,13 @@ try:
             testPredictPlot[:, :] = np.nan
             testPredictPlot[len(train_predict)+(look_back*2)+1:len(df1)-1, :] = test_predict
 
-            x_input=test_data[len(test_data)-7:].reshape(1,-1)
+            x_input=test_data[len(test_data)-time_step:].reshape(1,-1)
 
             temp_input=list(x_input)
             temp_input=temp_input[0].tolist()
 
             # demonstrate prediction for next days
-            predict_days=11
+
             lst_output=[]
             n_steps=2
             i=0
@@ -237,24 +246,24 @@ try:
                     i=i+1
 
 
-            st.write(lst_output)
+            #st.write(lst_output)
 
-                # st.write(df3)
-            no2_output=pd.DataFrame(scaler.inverse_transform(lst_output),columns=['NO2 Concentration 🏭'])
-            print(no2_output)
-            output= (no2_output.at[predict_days-1,'CO2 Concentration 🏭'])
-            st.success(output)
-            res=output[:-1]
+                
+            co2_output=pd.DataFrame(scaler.inverse_transform(lst_output),columns=['CO2 Concentration 🏭'])
+            st.write(co2_output)
+            output= (co2_output.at[predict_days-1,'CO2 Concentration 🏭'])
+            #st.success(output)
+
 
     
-            if(math.isnan(res)):
+            if(math.isnan(output)):
                 st.error("Unable to find co2 concentration at the specified location")
             else:
                 st.write("""<style>[data-testid="stMetricDelta"] svg {display: none;}</style>""",unsafe_allow_html=True)   
-                if(res<415):
-                    st.metric(label="Amount of CO2 (in ppm)", value=round(res,3), delta="parts per millions")
+                if(output<415):
+                    st.metric(label="Amount of CO2 (in ppm)", value=round(output,3), delta="parts per millions")
                 else:
-                    st.metric(label="Amount of CO2 (in ppm)", value=round(res,3), delta="parts per millions",delta_color="inverse")
+                    st.metric(label="Amount of CO2 (in ppm)", value=round(output,3), delta="parts per millions",delta_color="inverse")
 
 
      
@@ -739,4 +748,3 @@ try:
 except:
   # Prevent the error from propagating into your Streamlit app.
   pass
-
